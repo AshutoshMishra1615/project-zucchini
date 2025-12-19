@@ -22,22 +22,26 @@ export const updatePaymentStatus = async (
     throw new ApiError(404, "User not found");
   }
 
+  if (!razorpayDetails) {
+    throw new ApiError(400, "Razorpay details not found");
+  }
+
   await db.update(usersTable).set({ isVerified: true }).where(eq(usersTable.id, userId));
   const [transaction] = await db
-    .update(transactionsTable)
-    .set({
+    .insert(transactionsTable)
+    .values({
+      userId,
+      transactionId: razorpayDetails.paymentId,
       isVerified: true,
-      verifiedAt: new Date(),
       paymentMethod,
     })
-    .where(eq(transactionsTable.userId, userId))
     .returning();
 
   if (!transaction) {
     throw new ApiError(404, "Transaction not found");
   }
 
-  if (paymentMethod === "razorpay" && razorpayDetails) {
+  if (paymentMethod === "razorpay") {
     await db.insert(razorpayPaymentsTable).values({
       transactionId: transaction.id,
       orderId: razorpayDetails.orderId,
@@ -86,7 +90,6 @@ export const getPaymentStatus = async (userId: number) => {
         orderId: payment.orderId,
         paymentId: payment.paymentId,
         signature: payment.signature,
-        verifiedAt: payment.verifiedAt,
       };
     }
   }
@@ -94,7 +97,6 @@ export const getPaymentStatus = async (userId: number) => {
   return {
     isVerified: transaction.isVerified,
     paymentMethod: transaction.paymentMethod,
-    verifiedAt: transaction.verifiedAt,
     razorpayDetails,
   };
 };

@@ -29,11 +29,9 @@ export const transactionsTable = pgTable("transactions", {
     .notNull()
     .unique()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  paymentReceipt: text().notNull(),
   transactionId: varchar({ length: 255 }).notNull(),
   paymentMethod: paymentMethodEnum(),
   isVerified: boolean().notNull().default(false),
-  verifiedAt: timestamp(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow(),
 });
