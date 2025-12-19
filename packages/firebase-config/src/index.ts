@@ -19,6 +19,3 @@ export const auth = getAuth(app);
 export type { User } from "firebase/auth";
 
 export * from "./services/auth";
-export * from "./services/user";
-export * from "./services/admin";
-export * from "./services/payment";

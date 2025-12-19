@@ -1,4 +1,4 @@
-import ComingSoon from "../components/coming-soon/ComingSoon";
+import ComingSoon from "../../components/coming-soon/ComingSoon";
 
 export default function ComingSoonPage() {
   return <ComingSoon />;

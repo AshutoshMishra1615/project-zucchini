@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${baloo.variable} ${inriaSans.variable}`}>
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

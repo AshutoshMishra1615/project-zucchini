@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import FireworksEffect from "./FireworksEffects";
+import { images } from "@/config/coming-soon";
 
 export default function ComingSoon() {
   return (
@@ -17,7 +18,7 @@ export default function ComingSoon() {
       <FireworksEffect />
 
       <Image
-        src="/uploads/background-image.png"
+        src={images.background}
         alt="Carnival Background"
         fill
         priority
@@ -53,7 +54,7 @@ export default function ComingSoon() {
       >
         {/*Top*/}
         <Image
-          src="/uploads/nitrutsavLogo.png"
+          src={images.logo}
           alt="NITRUTSAV"
           width={500}
           height={200}
@@ -67,7 +68,7 @@ export default function ComingSoon() {
         />
 
         <Image
-          src="/uploads/nitrutsavLogo.png"
+          src={images.logo}
           alt="NITRUTSAV"
           width={800}
           height={240}
@@ -81,7 +82,7 @@ export default function ComingSoon() {
 
         {/*bottom*/}
         <Image
-          src="/uploads/nitrutsavLogo.png"
+          src={images.logo}
           alt="NITRUTSAV"
           width={500}
           height={200}
@@ -110,7 +111,7 @@ export default function ComingSoon() {
         }}
       >
         <Image
-          src="/uploads/balloon.png"
+          src={images.balloon}
           alt="Coming Soon Balloon"
           width={400} // aspect ratio reference
           height={300} // aspect ratio reference

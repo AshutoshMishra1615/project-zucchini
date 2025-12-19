@@ -158,3 +158,6 @@ export type Registration = z.infer<typeof RegistrationSchema>;
 export const schemas = {
   Registration: RegistrationSchema,
 };
+
+// MUN Registration Schema
+export { MunRegistrationSchema, type MunRegistration } from "./mun-registration";
