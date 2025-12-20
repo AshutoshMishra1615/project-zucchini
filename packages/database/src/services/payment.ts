@@ -107,7 +107,6 @@ export const getPaymentStatus = async (userId: number) => {
   };
 };
 
-// MUN Payment Functions
 export const updateMunPaymentStatus = async (
   munRegistrationId: number,
   amount: number,
@@ -127,15 +126,24 @@ export const updateMunPaymentStatus = async (
     throw new ApiError(400, "Razorpay details not found");
   }
 
-  await db
-    .update(munRegistrationsTable)
-    .set({ isVerified: true })
-    .where(eq(munRegistrationsTable.id, munRegistrationId));
+  const teamId = munUser.teamId || munUser.firebaseUid || `individual-${munUser.id}`;
+
+  if (munUser.teamId) {
+    await db
+      .update(munRegistrationsTable)
+      .set({ isVerified: true })
+      .where(eq(munRegistrationsTable.teamId, munUser.teamId));
+  } else {
+    await db
+      .update(munRegistrationsTable)
+      .set({ isVerified: true })
+      .where(eq(munRegistrationsTable.id, munRegistrationId));
+  }
 
   const [transaction] = await db
     .insert(munTransactionsTable)
     .values({
-      munRegistrationId,
+      teamId, // Use teamId instead of munRegistrationId
       transactionId: razorpayDetails.paymentId,
       amount,
       isVerified: true,
@@ -146,10 +154,6 @@ export const updateMunPaymentStatus = async (
   if (!transaction) {
     throw new ApiError(404, "Transaction not found");
   }
-
-  // Note: We don't insert into razorpayPaymentsTable for MUN transactions
-  // because it has a foreign key to the regular transactions table.
-  // All payment details are already stored in munTransactionsTable.
 
   return {
     message: "MUN payment verified successfully",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { signInWithGoogle, onAuthStateChanged, type User } from "@repo/firebase-config";
-import { useApi } from "@repo/shared-utils/src/use-api";
+import { useApi } from "@repo/shared-utils";
 import {
   LoadingState,
   ProgressBar,
@@ -15,7 +15,6 @@ import {
 type RegistrationStep = "auth" | "form" | "payment" | "complete";
 
 interface UserData {
-  userId: number;
   name: string;
   email: string;
 }
@@ -28,6 +27,8 @@ interface CheckRegistrationResponse {
   name: string | null;
   email: string | null;
   isPaymentVerified: boolean;
+  isNitrStudent: boolean;
+  isVerified: boolean;
 }
 
 export default function RegisterPage() {
@@ -47,27 +48,27 @@ export default function RegisterPage() {
       if (firebaseUser) {
         try {
           const result = await checkRegistration("check-cross-registration", {
-            method: "POST",
-            body: JSON.stringify({ firebaseUid: firebaseUser.uid }),
+            method: "GET",
           });
 
           if (result?.isNitrutsavRegistered) {
             setUserData({
-              userId: result.userId!,
               name: result.name!,
               email: result.email!,
             });
 
-            if (result.isPaymentVerified) {
+            if (result.isPaymentVerified || (result.isNitrStudent && result.isVerified)) {
               setCurrentStep("complete");
             } else {
               setCurrentStep("payment");
             }
           } else {
+            // User not registered - show form
             setCurrentStep("form");
           }
         } catch (error) {
           console.error("Failed to check registration status:", error);
+          // On error, show form
           setCurrentStep("form");
         }
       }
@@ -90,13 +91,17 @@ export default function RegisterPage() {
     }
   };
 
-  const handleRegistrationComplete = (userId: number) => {
+  const handleRegistrationComplete = (isNitrStudent: boolean = false) => {
     setUserData({
-      userId,
       name: user?.displayName || "",
       email: user?.email || "",
     });
-    setCurrentStep("payment");
+
+    if (isNitrStudent) {
+      setCurrentStep("complete");
+    } else {
+      setCurrentStep("payment");
+    }
   };
 
   const handlePaymentSuccess = () => {

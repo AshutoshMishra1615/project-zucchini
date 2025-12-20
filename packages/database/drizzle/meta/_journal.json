@@ -22,6 +22,27 @@
       "when": 1766172449943,
       "tag": "0002_new_nextwave",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766230831447,
+      "tag": "0003_smiling_zemo",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1766233994572,
+      "tag": "0004_faithful_johnny_storm",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1766237881392,
+      "tag": "0005_brainy_champions",
+      "breakpoints": true
     }
   ]
 }

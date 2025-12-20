@@ -3,7 +3,6 @@ import { integer, pgTable, varchar, timestamp, boolean, text, pgEnum } from "dri
 export const genderEnum = pgEnum("gender", ["MALE", "FEMALE"]);
 export const paymentMethodEnum = pgEnum("payment_method", ["qr", "razorpay"]);
 
-// MUN-specific enums
 export const studentTypeEnum = pgEnum("student_type", ["SCHOOL", "COLLEGE"]);
 export const munCommitteeEnum = pgEnum("mun_committee", ["OVERNIGHT_CRISIS", "MOOT_COURT"]);
 export const bloodGroupEnum = pgEnum("blood_group", [
@@ -31,6 +30,7 @@ export const usersTable = pgTable("users", {
   referralCode: varchar({ length: 50 }),
   permission: text().notNull(),
   undertaking: text().notNull(),
+  isNitrStudent: boolean().notNull().default(false),
   isVerified: boolean().notNull().default(false),
   registeredAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow(),
@@ -84,19 +84,19 @@ export type NewAdmin = typeof adminsTable.$inferInsert;
 export type RazorpayPayment = typeof razorpayPaymentsTable.$inferSelect;
 export type NewRazorpayPayment = typeof razorpayPaymentsTable.$inferInsert;
 
-// MUN Registration Tables
 export const munRegistrationsTable = pgTable("mun_registrations", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  firebaseUid: varchar({ length: 128 }).notNull().unique(),
+  firebaseUid: varchar({ length: 128 }).unique(),
 
-  // Basic Information
+  teamId: varchar({ length: 36 }),
+  isTeamLeader: boolean().default(false),
+
   name: varchar({ length: 255 }).notNull(),
   gender: genderEnum().notNull(),
   dateOfBirth: timestamp().notNull(),
   phone: varchar({ length: 10 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
 
-  // College/Institute Details
   studentType: studentTypeEnum().notNull(),
   institute: varchar({ length: 255 }).notNull(),
   university: varchar({ length: 255 }).notNull(),
@@ -105,32 +105,18 @@ export const munRegistrationsTable = pgTable("mun_registrations", {
   rollNumber: varchar({ length: 100 }).notNull(),
   idCard: text().notNull(),
 
-  // MUN Specific
   committeeChoice: munCommitteeEnum().notNull(),
   hasParticipatedBefore: boolean().notNull(),
 
-  // Team Information (for MOOT Court - Option A: Leader registers team)
-  isTeamLeader: boolean().default(false),
-  teammate1Name: varchar({ length: 255 }),
-  teammate1Email: varchar({ length: 255 }),
-  teammate1Phone: varchar({ length: 10 }),
-  teammate2Name: varchar({ length: 255 }),
-  teammate2Email: varchar({ length: 255 }),
-  teammate2Phone: varchar({ length: 10 }),
-
-  // Emergency & Safety
   emergencyContactName: varchar({ length: 255 }).notNull(),
   emergencyContactPhone: varchar({ length: 10 }).notNull(),
   bloodGroup: bloodGroupEnum(),
 
-  // Declaration
   agreedToTerms: boolean().notNull(),
 
-  // Cross-Registration Tracking
-  // MUN registration counts as NITRUTSAV registration
   countsAsNitrutsavRegistration: boolean().notNull().default(true),
 
-  // Status
+  isNitrStudent: boolean().notNull().default(false),
   isVerified: boolean().notNull().default(false),
   registeredAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow(),
@@ -138,12 +124,9 @@ export const munRegistrationsTable = pgTable("mun_registrations", {
 
 export const munTransactionsTable = pgTable("mun_transactions", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  munRegistrationId: integer()
-    .notNull()
-    .unique()
-    .references(() => munRegistrationsTable.id, { onDelete: "cascade" }),
+  teamId: varchar({ length: 36 }).notNull().unique(),
   transactionId: varchar({ length: 255 }).notNull(),
-  amount: integer().notNull(), // Base: 1500 (college) or 1200 (school), tripled for MOOT Court teams
+  amount: integer().notNull(),
   paymentMethod: paymentMethodEnum(),
   paymentScreenshot: text(),
   isVerified: boolean().notNull().default(false),

@@ -3,6 +3,7 @@ import { munRegistrationsTable, munTransactionsTable, usersTable } from "../sche
 import { eq } from "drizzle-orm";
 import { MunRegistrationSchema, validateAndThrow, type MunRegistration } from "@repo/shared-types";
 import { getUserByFirebaseUid } from "./user";
+import { munAmount } from "../../../../apps/web/config";
 
 export const getMunUserByFirebaseUid = async (firebaseUid: string) => {
   const [result] = await db
@@ -11,10 +12,7 @@ export const getMunUserByFirebaseUid = async (firebaseUid: string) => {
       transaction: munTransactionsTable,
     })
     .from(munRegistrationsTable)
-    .leftJoin(
-      munTransactionsTable,
-      eq(munRegistrationsTable.id, munTransactionsTable.munRegistrationId)
-    )
+    .leftJoin(munTransactionsTable, eq(munRegistrationsTable.teamId, munTransactionsTable.teamId))
     .where(eq(munRegistrationsTable.firebaseUid, firebaseUid))
     .limit(1);
 
@@ -26,14 +24,46 @@ export const getMunUserByFirebaseUid = async (firebaseUid: string) => {
   };
 };
 
-export const registerMunUser = async (userData: MunRegistration, firebaseUid: string) => {
+const checkEmailRegistration = async (email: string): Promise<boolean> => {
+  const [munReg] = await db
+    .select()
+    .from(munRegistrationsTable)
+    .where(eq(munRegistrationsTable.email, email))
+    .limit(1);
+
+  if (munReg) return true;
+
+  const [nitrutsavReg] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.email, email))
+    .limit(1);
+
+  return !!nitrutsavReg;
+};
+
+export const registerMunUser = async (
+  userData: MunRegistration,
+  firebaseUid: string,
+  isNitrStudent: boolean = false
+) => {
   validateAndThrow(MunRegistrationSchema, userData, "MUN registration");
+
+  if (await checkEmailRegistration(userData.email)) {
+    throw new Error(`${userData.email} is already registered`);
+  }
+
+  const teamId = crypto.randomUUID();
 
   const [newRegistration] = await db
     .insert(munRegistrationsTable)
     .values({
       firebaseUid,
+      teamId,
+      isTeamLeader: false,
       ...userData,
+      isNitrStudent,
+      isVerified: isNitrStudent, // Auto-verify NITR students
     })
     .returning();
 
@@ -41,22 +71,99 @@ export const registerMunUser = async (userData: MunRegistration, firebaseUid: st
     throw new Error("Failed to create MUN registration");
   }
 
-  return { userId: newRegistration.id };
+  return { userId: newRegistration.id, teamId };
 };
 
-// Calculate registration fee based on student type and committee
+export const registerMunTeam = async (
+  teamLeader: MunRegistration,
+  teammate1: MunRegistration,
+  teammate2: MunRegistration,
+  leaderFirebaseUid: string,
+  teammate1FirebaseUid: string | null,
+  teammate2FirebaseUid: string | null,
+  leaderIsNitrStudent: boolean = false,
+  teammate1IsNitrStudent: boolean = false,
+  teammate2IsNitrStudent: boolean = false
+) => {
+  const emails = [teamLeader.email, teammate1.email, teammate2.email];
+  for (const email of emails) {
+    if (await checkEmailRegistration(email)) {
+      throw new Error(`${email} is already registered`);
+    }
+  }
+
+  const teamId = crypto.randomUUID();
+
+  const registrations = await db
+    .insert(munRegistrationsTable)
+    .values([
+      {
+        firebaseUid: leaderFirebaseUid,
+        teamId,
+        isTeamLeader: true,
+        ...teamLeader,
+        isNitrStudent: leaderIsNitrStudent,
+        isVerified: leaderIsNitrStudent, // Auto-verify NITR students
+      },
+      {
+        firebaseUid: teammate1FirebaseUid,
+        teamId,
+        isTeamLeader: false,
+        ...teammate1,
+        isNitrStudent: teammate1IsNitrStudent,
+        isVerified: teammate1IsNitrStudent,
+      },
+      {
+        firebaseUid: teammate2FirebaseUid,
+        teamId,
+        isTeamLeader: false,
+        ...teammate2,
+        isNitrStudent: teammate2IsNitrStudent,
+        isVerified: teammate2IsNitrStudent,
+      },
+    ])
+    .returning();
+
+  if (registrations.length !== 3) {
+    throw new Error("Failed to create team registrations");
+  }
+
+  return {
+    teamId,
+    teamLeaderId: registrations[0]!.id,
+    teammate1Id: registrations[1]!.id,
+    teammate2Id: registrations[2]!.id,
+  };
+};
+
+export const getTeamMembers = async (teamId: string) => {
+  const members = await db
+    .select()
+    .from(munRegistrationsTable)
+    .where(eq(munRegistrationsTable.teamId, teamId));
+
+  return members;
+};
+
+export const updateTeammateFirebaseUid = async (email: string, firebaseUid: string) => {
+  const [updated] = await db
+    .update(munRegistrationsTable)
+    .set({ firebaseUid })
+    .where(eq(munRegistrationsTable.email, email))
+    .returning();
+
+  return updated;
+};
+
 export const getMunRegistrationFee = (
   studentType: "SCHOOL" | "COLLEGE",
   committeeChoice: string
 ): number => {
-  const baseFee = studentType === "COLLEGE" ? 1500 : 1200;
-  // MOOT Court requires 3 people, so triple the cost
+  const baseFee = studentType === "COLLEGE" ? munAmount.college : munAmount.school;
   return committeeChoice === "MOOT_COURT" ? baseFee * 3 : baseFee;
 };
 
-// Check if user is already registered for NITRUTSAV or MUN
 export const checkCrossRegistration = async (firebaseUid: string) => {
-  // Check MUN registration
   const munUser = await getMunUserByFirebaseUid(firebaseUid);
   if (munUser) {
     return {
@@ -67,10 +174,11 @@ export const checkCrossRegistration = async (firebaseUid: string) => {
       name: munUser.name,
       email: munUser.email,
       isPaymentVerified: munUser.isPaymentVerified,
+      isNitrStudent: munUser.isNitrStudent,
+      isVerified: munUser.isVerified,
     };
   }
 
-  // Check NITRUTSAV registration
   const nitrutsavUser = await getUserByFirebaseUid(firebaseUid);
   if (nitrutsavUser) {
     return {
@@ -81,6 +189,8 @@ export const checkCrossRegistration = async (firebaseUid: string) => {
       name: nitrutsavUser.name,
       email: nitrutsavUser.email,
       isPaymentVerified: nitrutsavUser.isPaymentVerified,
+      isNitrStudent: nitrutsavUser.isNitrStudent,
+      isVerified: nitrutsavUser.isVerified,
     };
   }
 
@@ -92,5 +202,7 @@ export const checkCrossRegistration = async (firebaseUid: string) => {
     name: null,
     email: null,
     isPaymentVerified: false,
+    isNitrStudent: false,
+    isVerified: false,
   };
 };

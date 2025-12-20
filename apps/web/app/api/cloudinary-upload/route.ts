@@ -1,6 +1,9 @@
 import { NextRequest } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-import { handleResponse, handleApiError } from "@repo/shared-utils/src/api-utils";
+import { handleResponse, handleApiError, requireAuth } from "@repo/shared-utils/server";
+
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+const MAX_SIZE = 5 * 1024 * 1024;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,10 +12,6 @@ cloudinary.config({
 });
 
 export async function POST(request: NextRequest) {
-  if (process.env.NODE_ENV === "production") {
-    return handleApiError(new Error("Not found"), "Not found");
-  }
-
   try {
     if (
       !process.env.CLOUDINARY_CLOUD_NAME ||
@@ -32,6 +31,17 @@ export async function POST(request: NextRequest) {
       return handleApiError(new Error("No file provided"), "No file provided");
     }
 
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return handleApiError(
+        new Error("Invalid file type"),
+        "Only JPEG, PNG, WebP images and PDF files are allowed"
+      );
+    }
+
+    if (file.size > MAX_SIZE) {
+      return handleApiError(new Error("File too large"), "Maximum file size is 5MB");
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64File = `data:${file.type};base64,${buffer.toString("base64")}`;
@@ -48,7 +58,6 @@ export async function POST(request: NextRequest) {
       resourceType: result.resource_type,
     });
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
     return handleApiError(error, "Upload failed");
   }
 }
