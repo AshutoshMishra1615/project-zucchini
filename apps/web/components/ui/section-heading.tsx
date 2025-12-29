@@ -38,7 +38,7 @@ export default function SectionHeading({
     >
       {showLines && <Lines length={lineLength} />}
       <div className={`gradient-border px-5 py-4 ${className}`} style={customStyles}>
-        <h1 className={textClassName}>{title}</h1>
+        <h1 className={`${textClassName} whitespace-nowrap`}>{title}</h1>
       </div>
       {showLines && <Lines flowDirection="rtl" length={lineLength} />}
     </div>

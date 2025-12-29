@@ -5,7 +5,7 @@ export const navItems = [
   },
   {
     label: "About",
-    href: "/coming-soon",
+    href: "/about",
   },
   {
     label: "Events",

@@ -3,56 +3,22 @@
 import React from "react";
 import Image from "next/image";
 import { AboutImages } from "@/config/About";
+import { SectionHeading } from "../ui";
 
 export default function AboutSection() {
   return (
-    <section className="min-h-screen relative text-[12px] sm:text-[16px] md:text-[14px] overflow-x-hidden">
+    <section className=" text-[12px] sm:text-[16px] md:text-[14px] overflow-x-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <Image
-          fill
-          alt="Background"
-          className="object-cover"
-          src={AboutImages.background}
-          priority
-        />
-      </div>
 
       {/* Main Content Container */}
-      <div className="relative z-10 min-h-screen flex flex-col lg:flex-row w-full justify-center items-center lg:items-start gap-6 lg:gap-8 px-4 py-8 lg:py-16">
+      <div className="relative z-10 min-h-screen flex flex-col lg:flex-row w-full justify-center items-center lg:items-start gap-6 lg:gap-8 px-4 py-8 lg:py-16 mt-20">
         "{/* Left Column - About Content */}
         <div className="flex flex-col flex-1 basis-0 w-full sm:max-w-[500px] lg:max-w-[45rem] justify-center items-center lg:[transform:rotateX(-12deg)_rotateY(40deg)] lg:[transform-style:preserve-3d] lg:origin-right">
           {/* Title Section - Centered with conical lines */}
           <div className="flex justify-center items-center w-full h-[3rem] lg:h-[5rem]">
             {/* Conical line - left */}
 
-            <Image
-              width={8725}
-              height={19355}
-              alt="Line decoration"
-              className=" h-[6rem] w-[10rem] sm:w-[7.5rem] lg:w-[14rem] object-contain hidden sm:block lg:m-[-10px] [transform:rotateX(16.5deg)_rotateY(40deg)] transform-style:preserve-3d"
-              src={AboutImages.line1Image}
-            />
-            {/* ABOUT US Title */}
-            <div
-              className="flex justify-center items-center rounded-tr-xl rounded-bl-xl border border-transparent"
-              style={{
-                background:
-                  "linear-gradient(143deg, #FFFABE, #E7581F, #8D2357, #055A44, #FB229E, #9906BE, #FFF)",
-              }}
-            >
-              <div className="px-1 sm:px-2 py-0.5 rounded-tr-xl rounded-bl-xl bg-[#1a1a1a] text-white font-['Berryfield_Regular'] text-[1.2rem] font-normal leading-normal whitespace-nowrap [text-shadow:_0_3.92px_3.92px_rgba(0,0,0,0.43)]">
-                ABOUT US
-              </div>
-            </div>
-            {/* Conical line - right */}
-            <Image
-              width={8725}
-              height={19355}
-              alt="Line decoration"
-              className="hidden sm:block h-[6rem] w-[10rem] sm:h-[7.5rem] sm:w-[7.5rem] lg:w-[14rem] lg:m-[-10px] object-contain p-0 [transform:rotateX(16.5deg)_rotateY(40deg)] transform-style:preserve-3d"
-              src={AboutImages.line2Image}
-            />
+            <SectionHeading title="ABOUT" className="text-white" />
           </div>
 
           {/* Content Card with Gradient Border */}
@@ -102,11 +68,10 @@ export default function AboutSection() {
               </div>
 
               <p
-                className="text-white leading-relaxed relative z-10"
+                className="text-white leading-relaxed relative z-10 text-xl"
                 style={{
                   color: "#FFF",
                   fontFamily: "Inria Sans",
-                  fontSize: "clamp(1.1rem, 0.95vw, 1.1rem)",
                   fontWeight: 700,
                   lineHeight: "normal",
                 }}
@@ -134,7 +99,7 @@ export default function AboutSection() {
               src={AboutImages.line1Image}
             />
             <span
-              className="text-[clamp(1.1rem,3vw,2rem)] font-bold font-baloo bg-clip-text text-transparent whitespace-nowrap"
+              className="text-[clamp(1.1rem,3vw,2rem)] font-bold font-baloo bg-clip-text text-transparent whitespace-nowrap font-berry"
               style={{
                 backgroundImage:
                   "linear-gradient(270deg, #EA0B0F 0%, #F3BC16 48.08%, #FF0092 100%)",
@@ -208,98 +173,6 @@ export default function AboutSection() {
       </div>
 
       {/* Contact Section */}
-      <div className="relative flex flex-col gap-8 sm:gap-12 lg:gap-16 py-8 lg:py-12 items-center justify-center w-full min-h-screen z-10">
-        {/* Contact US Title with decorative lines */}
-        <div className="flex justify-center items-center gap-2 sm:gap-4 lg:gap-6 w-full">
-          {/* Conical line - left */}
-          <div
-            className="h-[2px] sm:h-[3px] w-[15%] sm:w-[20%] lg:w-[25%] bg-white"
-            style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)" }}
-          />
-          {/* CONTACT US Title */}
-          <div
-            className="flex justify-center items-center rounded-tr-xl rounded-bl-xl border border-transparent"
-            style={{
-              background:
-                "linear-gradient(143deg, #FFFABE, #E7581F, #8D2357, #055A44, #FB229E, #9906BE, #FFF)",
-            }}
-          >
-            <div className="px-3 py-1 sm:px-4 rounded-tr-xl rounded-bl-xl bg-[#1a1a1a] text-white font-['Berryfield_Regular'] text-[1rem] sm:text-[1.3rem] lg:text-[1.6rem] font-bold leading-normal [text-shadow:_0_3.92px_3.92px_rgba(0,0,0,0.43)]">
-              CONTACT US
-            </div>
-          </div>
-          {/* Conical line - right */}
-          <div
-            className="h-[2px] sm:h-[3px] w-[15%] sm:w-[20%] lg:w-[25%] bg-white"
-            style={{ clipPath: "polygon(0 0, 0 100%, 100% 50%)" }}
-          />
-        </div>
-
-        {/* Contact Cards Container */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-12 sm:gap-24 md:gap-60 lg:gap-100 w-full px-4">
-          {/* Contact Card 1 */}
-          <div className="flex flex-col justify-center items-center">
-            <div
-              className="flex justify-center items-center h-[10rem] w-[10rem] sm:h-[12rem] sm:w-[12rem] lg:h-[14rem] lg:w-[14rem] mb-4 sm:mb-6 rounded-full p-1"
-              style={{
-                background:
-                  "linear-gradient(73deg, #FFFABE, #E7581F, #8D2357, #055A44, #FB229E, #9906BE, #FFF)",
-              }}
-            >
-              <div className="relative w-full h-full rounded-full overflow-hidden bg-black">
-                <Image
-                  src={AboutImages.Contact2Image}
-                  alt="Sidheshwar Mahananda"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col justify-center items-center text-center">
-              <h1 className="text-white font-semibold text-base sm:text-lg lg:text-xl mb-1">
-                Sidheshwar Mahananda
-              </h1>
-              <h2 className="text-white/80 text-sm sm:text-base lg:text-lg mb-1">
-                (Convenor-NITRUTSAV)
-              </h2>
-              <h2 className="text-white font-semibold text-base sm:text-lg lg:text-xl">
-                +91-8267862398
-              </h2>
-            </div>
-          </div>
-
-          {/* Contact Card 2 */}
-          <div className="flex flex-col justify-center items-center">
-            <div
-              className="flex justify-center items-center h-[10rem] w-[10rem] sm:h-[12rem] sm:w-[12rem] lg:h-[14rem] lg:w-[14rem] mb-4 sm:mb-6 rounded-full p-1"
-              style={{
-                background:
-                  "linear-gradient(73deg, #FFFABE, #E7581F, #8D2357, #055A44, #FB229E, #9906BE, #FFF)",
-              }}
-            >
-              <div className="relative w-full h-full rounded-full overflow-hidden bg-black">
-                <Image
-                  src={AboutImages.Contact2Image}
-                  alt="Shiba Nanda Sethy"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col justify-center items-center text-center">
-              <h1 className="text-white font-semibold text-base sm:text-lg lg:text-xl mb-1">
-                Shiba Nanda Sethy
-              </h1>
-              <h2 className="text-white/80 text-sm sm:text-base lg:text-lg mb-1">
-                (Convenor-NITRUTSAV)
-              </h2>
-              <h2 className="text-white font-semibold text-base sm:text-lg lg:text-xl">
-                +91-8267862398
-              </h2>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

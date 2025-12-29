@@ -222,6 +222,14 @@
   background-attachment: fixed;
 }
 
+.about-bg-image {
+  background-image: url("https://res.cloudinary.com/djbgkveiq/image/upload/v1766979350/image_59_fslrei.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* background-attachment: fixed; */
+}
+
 .step-indicator-active {
   border-radius: 33px;
   background: rgba(255, 255, 255, 0.16);
