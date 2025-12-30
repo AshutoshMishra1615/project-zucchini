@@ -73,6 +73,7 @@ export default function RegistrationForm({ user, onComplete }: RegistrationFormP
         {/* ID Card Upload */}
         <DocumentUpload
           label="College/University ID Card"
+          description="Clear picture of your ID card"
           value={formData.idCard}
           error={errors.idCard}
           onUploadComplete={(url) => handleInputChange("idCard", url)}
@@ -108,10 +109,10 @@ export default function RegistrationForm({ user, onComplete }: RegistrationFormP
 
       {/* Pricing Summary - Only for non-NITR students */}
       {!isNitrStudent && (
-        <div className="border-2 border-white/40 rounded-[13px] p-4 bg-white/25 backdrop-blur-[9.25px]">
+        <div className="border-2 border-white/40 rounded-[13px] p-4  backdrop-blur-[9.25px]">
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-sm text-white/80">Registration Fee</p>
+              <p className="text-sm text-white">Registration Fee</p>
               <p className="text-xs text-white/60">
                 {wantsAccommodation ? "With Accommodation" : "Without Accommodation"}
               </p>

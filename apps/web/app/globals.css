@@ -260,7 +260,7 @@
   position: relative;
   --border-width: 3px;
   --border-radius: 13px;
-  --bg-color: rgba(255, 255, 255, 0.25);
+  --bg-color: rgba(255, 255, 255, 0.22);
   --gradient-angle: 135deg;
 
   border-radius: var(--border-radius);
@@ -306,7 +306,7 @@
 .input-field {
   border-radius: 0 12px;
   border: 2px solid #fff;
-  backdrop-filter: blur(9.25px);
+  backdrop-filter: blur(10px);
   color: #fff;
 }
 
