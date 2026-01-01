@@ -23,9 +23,15 @@ export const calistoga = Calistoga({
   weight: ["400"],
   variable: "--font-calistoga",
 });
+
 const berryFields = localFont({
   src: "./custom/berryfield.woff",
   variable: "--font-berry",
 });
 
-export const fonts = `${baloo.variable} ${inriaSans.variable} ${berryFields.variable} ${berkshireSwash.variable} ${calistoga.variable}`;
+const berlinSans = localFont({
+  src: "./custom/berlin.ttf",
+  variable: "--font-berlins",
+});
+
+export const fonts = `${baloo.variable} ${inriaSans.variable} ${berryFields.variable} ${berkshireSwash.variable} ${calistoga.variable} ${berlinSans.variable}`;

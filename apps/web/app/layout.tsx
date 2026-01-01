@@ -6,6 +6,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { EventCategoryProvider } from "@/contexts/event-category-context";
 import Header from "../components/marginals/navbar";
 import Footer from "../components/marginals/footer";
+import HOC from "@/components/hoc";
 export const metadata: Metadata = {
   title: "Nitrutsav 2026 | Literary and Cultural Fest - NIT Rourkela",
   description:
@@ -20,15 +21,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <meta name="theme-color" content="#bf2d7e" />
+      <meta name="theme-color" content="#1A0D51" />
 
       <body className={`${fonts}`}>
         <AuthProvider>
           <EventCategoryProvider>
-            {/* <Loader /> */}
-            <Header />
-            {children}
-            <Footer />
+            <HOC>
+              <Header />
+              {children}
+              <Footer />
+            </HOC>
+
             <Toaster
               position="top-right"
               richColors

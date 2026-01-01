@@ -4,10 +4,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-const imgNitrutsavFilled =
-  "https://www.figma.com/api/mcp/asset/30138af7-72d1-4743-8d36-8ce06b3f8424";
-const imgNitrutsavOutline =
-  "https://www.figma.com/api/mcp/asset/69f1e7ac-1757-4150-81b4-d41d80b86609";
+const imgNitrutsavFilled = "/f1.svg";
+const imgNitrutsavOutline = "/o1.svg";
 
 export default function NitrutsavText() {
   return (

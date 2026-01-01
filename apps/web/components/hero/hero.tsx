@@ -36,12 +36,12 @@ export default function Hero() {
       <OwlRightDecorationLayer mouse={mouse} scrollY={scrollY} />
 
       <LogoLayer mouse={mouse} scrollY={scrollY}>
-        <LightStrings />
+        {/* <LightStrings /> */}
       </LogoLayer>
 
       <GirlLayer mouse={mouse} scrollY={scrollY} />
 
-      <div className="absolute md:bottom-30 bottom-30 left-1/2 -translate-x-1/2 z-50">
+      <div className="absolute md:bottom-30 bottom-30 left-1/2 -translate-x-1/2 z-34">
         <Link href="/register">
           <Button className="h-[75px] w-[275px]">Register Now</Button>
         </Link>

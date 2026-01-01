@@ -57,6 +57,7 @@ html::-webkit-scrollbar {
   --font-berkshire: var(--font-berkshire);
   --font-calistoga: var(--font-calistoga);
   --font-berry: var(--font-berry);
+  --font-berlins: var(--font-berlins);
   --breakpoint-llg: 1280px;
   --breakpoint-lmd: 1000px;
   --breakpoint-llmd: 800px;
@@ -372,7 +373,7 @@ html::-webkit-scrollbar {
 }
 
 .reg-bg-image {
-  background-image: url("https://res.cloudinary.com/drf3eatfm/image/upload/v1767255377/nitrutsav-2026/asytet27tlzxufxs8oiy.webp");
+  background-image: url("https://res.cloudinary.com/drf3eatfm/image/upload/v1767295733/nitrutsav-2026/lctuphktorvjn1sgtdyd.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -380,7 +381,7 @@ html::-webkit-scrollbar {
 }
 
 .events-bg {
-  background-image: url("https://res.cloudinary.com/drf3eatfm/image/upload/v1767282146/nitrutsav-2026/n85qpfin1wkgjmsfa9bj.webp");
+  background-image: url("https://res.cloudinary.com/drf3eatfm/image/upload/v1767295733/nitrutsav-2026/lctuphktorvjn1sgtdyd.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

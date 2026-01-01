@@ -77,9 +77,6 @@ export function CompleteStep({ userId, referralCode }: CompleteStepProps) {
               )}
             </button>
           </div>
-          <p className="text-white/50 text-xs mt-2 font-inria">
-            Share this code with friends to earn referral points!
-          </p>
         </div>
       )}
 
